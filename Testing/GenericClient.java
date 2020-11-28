@@ -1,6 +1,6 @@
 package Testing;
 
-
+// Todo: Add clock to response, add answer check, remove sending every message (change to only send time/forefit). 
 import java.util.*;
 import java.io.*;
 import java.net.*;

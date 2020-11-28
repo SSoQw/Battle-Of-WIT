@@ -28,8 +28,8 @@ public class Server {
     public static void sendToAll(String[] s) {
     	for(ClientHandler x : clients) {
     		if(s[1].contains("{quit}")) {
-    				x.w.printf("%s has left the chat.%n", s[0]);
-    		}else if(s[1].contains("has joined the chat!")){
+    				x.w.printf("%s has left the game.%n", s[0]);
+    		}else if(s[1].contains("has joined the game!")){
     				x.w.printf("%s %s%n", s[0], s[1]);
     		}else {
         			x.w.printf("%s: %s%n", s[0], s[1]);
@@ -39,7 +39,7 @@ public class Server {
 }
 
 class ClientHandler extends Thread {
-	  Socket connectionSocket;
+	  	Socket connectionSocket;
 	    PrintStream out;
 	    PrintWriter w;
 	    public ClientHandler(Socket s) throws IOException {
@@ -55,23 +55,22 @@ class ClientHandler extends Thread {
 	        		isHost = true;
 	        		Server.hasHost = false;
 	        	}
-	        	
+
 		        boolean done = false;
 		        out = new PrintStream(new BufferedOutputStream(connectionSocket.getOutputStream()));
 		        w = new PrintWriter(out, true);
 		        BufferedReader in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+		        
 		        String message;
 		        String[] messageSplit;
 		        String str = in.readLine();
-		        System.out.println(str + " has joined the chat!");
+		        System.out.println(str + " has joined the game!");
+		        
 		        String[] welcome =  new String[2];
 		        welcome[0] = str;
-		        welcome[1] = "has joined the chat!";
+		        welcome[1] = "has joined the game!";
 		        Server.sendToAll(welcome);
-		        
-		        if(isHost) {
-		        	
-		        }
+
 		        
 		        while(!done){
 		        	message = in.readLine();
