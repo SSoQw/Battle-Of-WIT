@@ -34,6 +34,39 @@ public class Server {
 			}
 		}
 	}
+	
+	public static void arithmeticGenerator(String Op) {
+		Random rand = new Random();
+		int num1;
+		int num2;
+		int solution;
+		
+		switch(op) {
+		case "+":
+			num1 = rand.nextInt(100);
+			num2 = rand.nextInt(100);
+			solution = num1+num2;
+		break;
+		
+		case "-":
+			num1 = rand.nextInt(100);
+			num2 = rand.nextInt(100);
+			solution = num1-num2;			
+		break;
+		
+		case "*":
+			num1 = rand.nextInt(20);
+			num2 = rand.nextInt(20);
+			solution = num1*num2;
+		break;
+		
+		case "%":
+			num1 = rand.nextInt(400);
+			num2 = rand.nextInt(20);
+			solution = num1%num2;
+		break;
+		}
+	}
 }
 
 class ClientHandler extends Thread {
