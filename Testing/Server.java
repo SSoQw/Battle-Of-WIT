@@ -41,7 +41,7 @@ public class Server {
 		int num2;
 		int solution;
 		
-		switch(op) {
+		switch(Op) {
 		case "+":
 			num1 = rand.nextInt(100);
 			num2 = rand.nextInt(100);
