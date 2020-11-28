@@ -35,35 +35,56 @@ public class Server {
 		}
 	}
 
-	public static void arithmeticGenerator(String Op) {
+	public static void arithmeticGenerator(String Op, int numQuestions) {
 		Random rand = new Random();
 		int num1;
 		int num2;
 		int solution;
+		int[][] Questions = new int[3][numQuestions];
 
 		switch (Op) {
-		case "+":
-			num1 = rand.nextInt(100) + 1;
-			num2 = rand.nextInt(100) + 1;
-			solution = num1 + num2;
+			case "+":
+				for(int i = 0; i<numQuestions; i++) {
+					num1 = rand.nextInt(100) + 1;
+					Questions[1][i] = num1;
+					num2 = rand.nextInt(100) + 1;
+					Questions[2][i] = num2;
+					solution = num1 + num2;
+					Questions[3][i] = solution;
+				}
 			break;
 
-		case "-":
-			num1 = rand.nextInt(100) + 1;
-			num2 = rand.nextInt(100) + 1;
-			solution = num1 - num2;
+			case "-":
+				for(int i = 0; i<numQuestions; i++) {
+					num1 = rand.nextInt(100) + 1;
+					Questions[1][i] = num1;
+					num2 = rand.nextInt(100) + 1;
+					Questions[2][i] = num2;
+					solution = num1 - num2;
+					Questions[3][i] = solution;
+				}
 			break;
 
-		case "*":
-			num1 = rand.nextInt(20) + 1;
-			num2 = rand.nextInt(20) + 1;
-			solution = num1 * num2;
+			case "*":
+				for(int i = 0; i<numQuestions; i++) {
+					num1 = rand.nextInt(20) + 1;
+					Questions[1][i] = num1;
+					num2 = rand.nextInt(20) + 1;
+					Questions[2][i] = num2;
+					solution = num1 * num2;
+					Questions[3][i] = solution;
+				}
 			break;
 
-		case "%":
-			num1 = rand.nextInt(400) + 1;
-			num2 = rand.nextInt(20) + 1;
-			solution = num1 % num2;
+			case "%":
+				for(int i = 0; i<numQuestions; i++) {
+					num1 = rand.nextInt(400) + 1;
+					Questions[1][i] = num1;
+					num2 = rand.nextInt(20) + 1;
+					Questions[2][i] = num2;
+					solution = num1 % num2;
+					Questions[3][i] = solution;
+				}
 			break;
 		}
 	}
