@@ -35,7 +35,7 @@ public class Server {
 		}
 	}
 
-	public static void arithmeticGenerator(String Op, int numQuestions) {
+	public static int[][] arithmeticGenerator(String Op, int numQuestions) {
 		Random rand = new Random();
 		int num1;
 		int num2;
@@ -87,6 +87,7 @@ public class Server {
 				}
 			break;
 		}
+		return(Questions);
 	}
 }
 
@@ -186,7 +187,7 @@ class ClientHandler extends Thread {
 					case "custom":
 						w.write("If you haven't already, add your csv file with your question/answer set to the file directory, then restart the server.");
 						w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
-						w.write("Please enter the file name: );
+						w.write("Please enter the file name: ");
 						String file = in.readLine();
 						if(file.toLowerCase().equals("quit")) {
 							System.exit(0);
