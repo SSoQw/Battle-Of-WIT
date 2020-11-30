@@ -129,7 +129,7 @@ class ClientHandler extends Thread {
 			out = new PrintStream(new BufferedOutputStream(connectionSocket.getOutputStream()));
 			w = new PrintWriter(out, true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-			//test
+
 			String message;
 			String[] messageSplit;
 			String str = in.readLine();
