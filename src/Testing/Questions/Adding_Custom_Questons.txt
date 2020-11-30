@@ -4,8 +4,8 @@ Question,Answer
 Question,Answer
 Question,Answer
 Question,Answer
-		.
-		.
-		.
+	.
+	.
+	.
 
 With no commas in either the question or the answer, otherwise the file will be read incorrectly.
