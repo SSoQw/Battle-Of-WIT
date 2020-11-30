@@ -42,6 +42,7 @@ public class Server {
 		String line;
 		List<List<String>> QwA = new ArrayList<>();
 		BufferedReader br;
+		int count = 0;
 		
 		switch(Options[0]) {
 		case "random":
@@ -53,8 +54,8 @@ public class Server {
 			br = new BufferedReader(new FileReader(filepath));
 		    try {
 				while ((line = br.readLine()) != null) {
-				    String[] values = line.split(",");
-				    QwA.add(Arrays.asList(values));
+				    String[] QAsplit = line.split(",");
+				    QwA.add(Arrays.asList(QAsplit));
 				}
 			} catch (IOException e) {
 				System.out.print("Something broke D:");
@@ -71,11 +72,11 @@ public class Server {
 			br = new BufferedReader(new FileReader(filepath));
 		    try {
 				while ((line = br.readLine()) != null) {
-				    String[] values = line.split(",");
-				    QwA.add(Arrays.asList(values));
+				    String[] QAsplit = line.split(",");
+				    QwA.add(Arrays.asList(QAsplit));
 				}
 			} catch (IOException e) {
-				System.out.print("Something broke D:");
+				System.out.print("Something broke D:, your filename is probably wrong.");
 				e.printStackTrace();
 			}
 			
@@ -218,8 +219,8 @@ class ClientHandler extends Thread {
 						}
 						Options.add(set);
 						
-						//Values here are place holders, as question sets aren't finalized.
-						w.write("Lastly, please enter the number of questons you would like (1-20):");
+
+						w.write("Lastly, please enter the number of questons you would like:");
 						NumQuestoins = in.readLine();
 						
 						while(Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
