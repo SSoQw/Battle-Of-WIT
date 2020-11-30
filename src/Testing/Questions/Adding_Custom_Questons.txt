@@ -1,0 +1,11 @@
+If you would like to add your own question/answer sets ensure that it exactly fits the following format:
+
+Question,Answer
+Question,Answer
+Question,Answer
+Question,Answer
+		.
+		.
+		.
+
+With no commas in either the question or the answer, otherwise the file will be read incorrectly.
