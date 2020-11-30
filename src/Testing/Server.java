@@ -36,17 +36,28 @@ public class Server {
 	}
 	
 	public static void startGame(String[] Options) {
+		int NumQuestions = Integer.parseInt(Options[3]);
+		
 		switch(Options[1]) {
 		case "random":
-			int[][] Questions = arithmeticGenerator(Options[2], Integer.parseInt(Options[3]));
+			int[][] Questions = arithmeticGenerator(Options[2], NumQuestions);
 		break;
 		
 		case "preset":
 			//open corresponding file and randomly pick questions from the file based on the number requested.
+			Questions = new int[2][NumQuestions];
+			for (int i = 0; i < NumQuestions; i++) {
+				
+			}
 		break;
 		
 		case "custom":
 			//open corresponding file and randomly pick questions from the file based on the number requested.
+			Questions = new int[2][NumQuestions];
+			for (int i = 0; i < NumQuestions; i++) {
+				
+			}
+
 		}
 	}
 
@@ -219,7 +230,15 @@ class ClientHandler extends Thread {
 						
 					break;
 				}
+				w.write("You're all setup, type start to start the game.");
+				String start = in.readLine();
+				while(!start.equalsIgnoreCase("start")) {
+					start = in.readLine();	
+				}
+				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
+				Server.startGame(strings);
 			}
+			
 		
 
 			while (!done) {
