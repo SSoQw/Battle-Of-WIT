@@ -34,96 +34,95 @@ public class Server {
 			}
 		}
 	}
-	
+
 	public static void startGame(String[] Options) throws FileNotFoundException {
 		int NumQuestions = Integer.parseInt(Options[2]);
 		int pickedQ;
 		int count = 0;
-		String[][] Questions = new String[2][NumQuestions];;
+		String[][] Questions = new String[2][NumQuestions];
 		String line;
 		List<List<String>> QwA = new ArrayList<List<String>>();
 		List<String> selected = new ArrayList<String>();
 		BufferedReader br;
-		
-		switch(Options[0]) {
+
+		switch (Options[0]) {
 		case "random":
 			Questions = arithmeticGenerator(Options[1], NumQuestions);
-		break;
-		
+			break;
+
 		case "preset":
-			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[1]+"Questions.csv";
+			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/" + Options[1] + "Questions.csv";
 			br = new BufferedReader(new FileReader(filepath));
-		    try {	
+			try {
 				while ((line = br.readLine()) != null) {
-				    String[] QAsplit = line.split(",");
-				    QwA.add(Arrays.asList(QAsplit));
+					String[] QAsplit = line.split(",");
+					QwA.add(Arrays.asList(QAsplit));
 				}
 			} catch (IOException e) {
 				System.out.print("Something broke D:");
 				e.printStackTrace();
 			}
-		    
-			int possibleQ = QwA.size()-1;
+
+			int possibleQ = QwA.size() - 1;
 			boolean[] used = new boolean[possibleQ];
-		    Random rand2 = new Random();
-		    
-		    
+			Random rand2 = new Random();
+
 			for (int i = 0; i < NumQuestions; i++) {
 				pickedQ = rand2.nextInt(possibleQ);
-				while(used[pickedQ]) {
+				while (used[pickedQ]) {
 					pickedQ = rand2.nextInt(possibleQ);
 				}
 				used[pickedQ] = true;
 				selected = QwA.get(pickedQ);
-				
-				for(String entrey : selected) {
-					if(Questions[0][count].equals(null)) {
+
+				for (String entrey : selected) {
+					if (Questions[0][count].equals(null)) {
 						Questions[0][count] = entrey;
-					}else {
+					} else {
 						Questions[1][count] = entrey;
 					}
 				}
-				
+
 				count += 1;
 			}
-		break;
-		
+			break;
+
 		case "custom":
-			filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[1];
+			filepath = "COMP2100_Final_Project/src/Testing/Questoins/" + Options[1];
 			br = new BufferedReader(new FileReader(filepath));
-		    try {
+			try {
 				while ((line = br.readLine()) != null) {
-				    String[] QAsplit = line.split(",");
-				    QwA.add(Arrays.asList(QAsplit));
+					String[] QAsplit = line.split(",");
+					QwA.add(Arrays.asList(QAsplit));
 				}
 			} catch (IOException e) {
 				System.out.print("Something broke D:, your filename is probably wrong.");
 				e.printStackTrace();
 			}
-			
-			possibleQ = QwA.size()-1;
+
+			possibleQ = QwA.size() - 1;
 			used = new boolean[possibleQ];
-		    rand2 = new Random();
-		    
+			rand2 = new Random();
+
 			for (int i = 0; i < NumQuestions; i++) {
 				pickedQ = rand2.nextInt(possibleQ);
-				while(used[pickedQ]) {
+				while (used[pickedQ]) {
 					pickedQ = rand2.nextInt(possibleQ);
 				}
 				used[pickedQ] = true;
 				selected = QwA.get(pickedQ);
-				
-				for(String entrey : selected) {
-					if(Questions[0][count].equals(null)) {
+
+				for (String entrey : selected) {
+					if (Questions[0][count].equals(null)) {
 						Questions[0][count] = entrey;
-					}else {
+					} else {
 						Questions[1][count] = entrey;
 					}
 				}
-				
+
 				count += 1;
 			}
-		break;
+			break;
 
 		}
 	}
@@ -136,47 +135,47 @@ public class Server {
 		String[][] Questions = new String[2][numQuestions];
 
 		switch (Op) {
-			case "+":
-				for(int i = 0; i<numQuestions; i++) {
-					num1 = rand.nextInt(100) + 1;
-					num2 = rand.nextInt(100) + 1;
-					Questions[0][i] = num1 + " + " + num2 + " =";
-					solution = num1 + num2;
-					Questions[1][i] = Integer.toString(solution);
-				}
+		case "+":
+			for (int i = 0; i < numQuestions; i++) {
+				num1 = rand.nextInt(100) + 1;
+				num2 = rand.nextInt(100) + 1;
+				Questions[0][i] = num1 + " + " + num2 + " =";
+				solution = num1 + num2;
+				Questions[1][i] = Integer.toString(solution);
+			}
 			break;
 
-			case "-":
-				for(int i = 0; i<numQuestions; i++) {
-					num1 = rand.nextInt(100) + 1;
-					num2 = rand.nextInt(100) + 1;
-					Questions[0][i] = num1 + " - " + num2 + " =";
-					solution = num1 - num2;
-					Questions[1][i] = Integer.toString(solution);
-				}
+		case "-":
+			for (int i = 0; i < numQuestions; i++) {
+				num1 = rand.nextInt(100) + 1;
+				num2 = rand.nextInt(100) + 1;
+				Questions[0][i] = num1 + " - " + num2 + " =";
+				solution = num1 - num2;
+				Questions[1][i] = Integer.toString(solution);
+			}
 			break;
 
-			case "*":
-				for(int i = 0; i<numQuestions; i++) {
-					num1 = rand.nextInt(20) + 1;
-					num2 = rand.nextInt(20) + 1;
-					Questions[0][i] = num1 + " * " + num2 + " =";
-					solution = num1 * num2;
-					Questions[1][i] = Integer.toString(solution);
-				}
+		case "*":
+			for (int i = 0; i < numQuestions; i++) {
+				num1 = rand.nextInt(20) + 1;
+				num2 = rand.nextInt(20) + 1;
+				Questions[0][i] = num1 + " * " + num2 + " =";
+				solution = num1 * num2;
+				Questions[1][i] = Integer.toString(solution);
+			}
 			break;
 
-			case "%":
-				for(int i = 0; i<numQuestions; i++) {
-					num1 = rand.nextInt(400) + 1;
-					num2 = rand.nextInt(20) + 1;
-					Questions[0][i] = num1 + " % " + num2 + " =";
-					solution = num1 % num2;
-					Questions[1][i] = Integer.toString(solution);
-				}
+		case "%":
+			for (int i = 0; i < numQuestions; i++) {
+				num1 = rand.nextInt(400) + 1;
+				num2 = rand.nextInt(20) + 1;
+				Questions[0][i] = num1 + " % " + num2 + " =";
+				solution = num1 % num2;
+				Questions[1][i] = Integer.toString(solution);
+			}
 			break;
 		}
-		return(Questions);
+		return (Questions);
 	}
 }
 
@@ -207,93 +206,92 @@ class ClientHandler extends Thread {
 			String message;
 			String[] messageSplit;
 			String str = in.readLine();
-			
+
 			System.out.println(str + " has connected!");
 
-
-			
-			if(isHost) {
+			if (isHost) {
 				ArrayList<String> Options = new ArrayList<String>();
-				w.write("Welcome "+ str + "! You are the host of the game. Please follow the instructions to get your game setup.");
+				w.write("Welcome " + str
+						+ "! You are the host of the game. Please follow the instructions to get your game setup.");
 				w.write("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
 				w.write("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
 				String gameMode = in.readLine().toLowerCase();
-				
-				while(!gameMode.equals("random") && !gameMode.equals("preset") && !gameMode.equals("custom")) {
+
+				while (!gameMode.equals("random") && !gameMode.equals("preset") && !gameMode.equals("custom")) {
 					w.write("No valid gamemode slected, please enter which mode you want to play (Random, Preset, Custom) case insensitive:");
 					gameMode = in.readLine().toLowerCase();
 				}
-				switch(gameMode) {
-					case "random":
-						Options.add(gameMode);
-						
-						w.write("Please enter the operation you would like to use for your aritmetic set (+, -, *, %)");
-						String Operation = in.readLine(); 
-						
-						while(!Operation.equals("+") && !Operation.equals("-") && !Operation.equals("*") && !Operation.equals("%")) {
-						w.write("Please enter enter a valid operation(+, -, *, %)");
-						Operation = in.readLine(); 
-						}
-						Options.add(Operation); 
-						
-						w.write("Lastly, please enter the number of questons you would like (1-20):");
-						String NumQuestoins = in.readLine();
-						
-						while(Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
-							w.write("Number of out of bounds, please enter a number between 1 and 20");
-							NumQuestoins = in.readLine();
-						}
-						Options.add(NumQuestoins); 
-						
-					break;
-					
-					case "preset":
-						Options.add(gameMode); 
-						
-						w.write("Would you like to use the computer science set, or math set?");
-						w.write("Please entere math or compsci, case insesitive: ");
-						String set = in.readLine().toLowerCase();
-						
-						while(!set.equals("math") && !set.equals("compsci")) {
-							w.write("No valid set selected, please entere math or compsci, case insesitive: ");
-							set = in.readLine().toLowerCase();
-						}
-						Options.add(set);
-						
+				switch (gameMode) {
+				case "random":
+					Options.add(gameMode);
 
-						w.write("Lastly, please enter the number of questons you would like:");
+					w.write("Please enter the operation you would like to use for your aritmetic set (+, -, *, %)");
+					String Operation = in.readLine();
+
+					while (!Operation.equals("+") && !Operation.equals("-") && !Operation.equals("*")
+							&& !Operation.equals("%")) {
+						w.write("Please enter enter a valid operation(+, -, *, %)");
+						Operation = in.readLine();
+					}
+					Options.add(Operation);
+
+					w.write("Lastly, please enter the number of questons you would like (1-20):");
+					String NumQuestoins = in.readLine();
+
+					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
+						w.write("Number of out of bounds, please enter a number between 1 and 20");
 						NumQuestoins = in.readLine();
-						
-						while(Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
-							w.write("Number of out of bounds, please enter a number between 1 and 20");
-							NumQuestoins = in.readLine();
-						}
-						Options.add(NumQuestoins); 
-						
+					}
+					Options.add(NumQuestoins);
+
 					break;
-					
-					case "custom":
-						Options.add(gameMode); 
-						w.write("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
-						w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
-						w.write("Please enter the file name, be sure to include .csv at the end: ");
-						String file = in.readLine();
-						
-						if(file.toLowerCase().contains("quit")) {
-							System.exit(0);
-						}
-						Options.add(file);
-						
-						w.write("Lastly, please enter the number of questons you would like from your file:");
+
+				case "preset":
+					Options.add(gameMode);
+
+					w.write("Would you like to use the computer science set, or math set?");
+					w.write("Please entere math or compsci, case insesitive: ");
+					String set = in.readLine().toLowerCase();
+
+					while (!set.equals("math") && !set.equals("compsci")) {
+						w.write("No valid set selected, please entere math or compsci, case insesitive: ");
+						set = in.readLine().toLowerCase();
+					}
+					Options.add(set);
+
+					w.write("Lastly, please enter the number of questons you would like:");
+					NumQuestoins = in.readLine();
+
+					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
+						w.write("Number of out of bounds, please enter a number between 1 and 20");
 						NumQuestoins = in.readLine();
-						Options.add(NumQuestoins); 
-						
+					}
+					Options.add(NumQuestoins);
+
+					break;
+
+				case "custom":
+					Options.add(gameMode);
+					w.write("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
+					w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
+					w.write("Please enter the file name, be sure to include .csv at the end: ");
+					String file = in.readLine();
+
+					if (file.toLowerCase().contains("quit")) {
+						System.exit(0);
+					}
+					Options.add(file);
+
+					w.write("Lastly, please enter the number of questons you would like from your file:");
+					NumQuestoins = in.readLine();
+					Options.add(NumQuestoins);
+
 					break;
 				}
 				w.write("You're all setup, type start to start the game.");
 				String start = in.readLine();
-				while(!start.equalsIgnoreCase("start")) {
-					start = in.readLine();	
+				while (!start.equalsIgnoreCase("start")) {
+					start = in.readLine();
 				}
 				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
 				Server.startGame(strings);
@@ -304,8 +302,6 @@ class ClientHandler extends Thread {
 				Server.sendToAll(welcome);
 				w.write("Please wait for the host to start the game.");
 			}
-			
-		
 
 			while (!done) {
 				message = in.readLine();
