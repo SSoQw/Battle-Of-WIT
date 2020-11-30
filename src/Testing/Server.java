@@ -35,14 +35,15 @@ public class Server {
 		}
 	}
 	
-	//Todo: pick random questions and answers from the CSVs and add them to their own question array
 	public static void startGame(String[] Options) throws FileNotFoundException {
 		int NumQuestions = Integer.parseInt(Options[2]);
+		int pickedQ;
+		int count = 0;
 		String[][] Questions = new String[2][NumQuestions];;
 		String line;
-		List<List<String>> QwA = new ArrayList<>();
+		List<List<String>> QwA = new ArrayList<List<String>>();
+		List<String> selected = new ArrayList<String>();
 		BufferedReader br;
-		int count = 0;
 		
 		switch(Options[0]) {
 		case "random":
@@ -52,7 +53,7 @@ public class Server {
 		case "preset":
 			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[1]+"Questions.csv";
 			br = new BufferedReader(new FileReader(filepath));
-		    try {
+		    try {	
 				while ((line = br.readLine()) != null) {
 				    String[] QAsplit = line.split(",");
 				    QwA.add(Arrays.asList(QAsplit));
@@ -62,8 +63,28 @@ public class Server {
 				e.printStackTrace();
 			}
 		    
+			int possibleQ = QwA.size()-1;
+			boolean[] used = new boolean[possibleQ];
+		    Random rand2 = new Random();
+		    
+		    
 			for (int i = 0; i < NumQuestions; i++) {
+				pickedQ = rand2.nextInt(possibleQ);
+				while(used[pickedQ]) {
+					pickedQ = rand2.nextInt(possibleQ);
+				}
+				used[pickedQ] = true;
+				selected = QwA.get(pickedQ);
 				
+				for(String entrey : selected) {
+					if(Questions[0][count].equals(null)) {
+						Questions[0][count] = entrey;
+					}else {
+						Questions[1][count] = entrey;
+					}
+				}
+				
+				count += 1;
 			}
 		break;
 		
@@ -80,9 +101,29 @@ public class Server {
 				e.printStackTrace();
 			}
 			
+			possibleQ = QwA.size()-1;
+			used = new boolean[possibleQ];
+		    rand2 = new Random();
+		    
 			for (int i = 0; i < NumQuestions; i++) {
+				pickedQ = rand2.nextInt(possibleQ);
+				while(used[pickedQ]) {
+					pickedQ = rand2.nextInt(possibleQ);
+				}
+				used[pickedQ] = true;
+				selected = QwA.get(pickedQ);
 				
+				for(String entrey : selected) {
+					if(Questions[0][count].equals(null)) {
+						Questions[0][count] = entrey;
+					}else {
+						Questions[1][count] = entrey;
+					}
+				}
+				
+				count += 1;
 			}
+		break;
 
 		}
 	}
