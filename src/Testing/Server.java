@@ -34,6 +34,21 @@ public class Server {
 			}
 		}
 	}
+	
+	public static void startGame(String[] Options) {
+		switch(Options[1]) {
+		case "random":
+			int[][] Questions = arithmeticGenerator(Options[2], Integer.parseInt(Options[3]));
+		break;
+		
+		case "preset":
+			//open corresponding file and randomly pick questions from the file based on the number requested.
+		break;
+		
+		case "custom":
+			//same as above more or less
+		}
+	}
 
 	public static int[][] arithmeticGenerator(String Op, int numQuestions) {
 		Random rand = new Random();
@@ -119,7 +134,7 @@ class ClientHandler extends Thread {
 			String[] messageSplit;
 			String str = in.readLine();
 			
-			System.out.println(str + " has joined the game!");
+			System.out.println(str + " has connected!");
 
 			String[] welcome = new String[2];
 			welcome[0] = str;
@@ -127,6 +142,7 @@ class ClientHandler extends Thread {
 			Server.sendToAll(welcome);
 			
 			if(isHost) {
+				ArrayList<String> Options = new ArrayList<String>();
 				w.write("Welcome "+ str + "! You are the host of the game. Please follow the instructions to get your game setup.");
 				w.write("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
 				w.write("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
@@ -138,6 +154,8 @@ class ClientHandler extends Thread {
 				}
 				switch(gameMode) {
 					case "random":
+						Options.add(gameMode);
+						
 						w.write("Please enter the operation you would like to use for your aritmetic set (+, -, *, %)");
 						String Operation = in.readLine(); 
 						
@@ -145,53 +163,60 @@ class ClientHandler extends Thread {
 						w.write("Please enter enter a valid operation(+, -, *, %)");
 						Operation = in.readLine(); 
 						}
+						Options.add(Operation); 
 						
-						switch(Operation) {
-						case "+":
-							
-						break;
+						w.write("Lastly, please enter the number of questons you would like (1-20):");
+						String NumQuestoins = in.readLine();
 						
-						case "-":
-							
-						break;
-						
-						case "*":
-							
-						break;
-						
-						case "%":
-							
-						break;
+						while(Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
+							w.write("Number of out of bounds, please enter a number between 1 and 20");
+							NumQuestoins = in.readLine();
 						}
+						Options.add(NumQuestoins); 
+						
 					break;
 					
 					case "preset":
+						Options.add(gameMode); 
+						
 						w.write("Would you like to use the computer science set, or math set?");
 						w.write("Please entere math or compsci, case insesitive: ");
 						String set = in.readLine().toLowerCase();
+						
 						while(!set.equals("math") && !set.equals("compsci")) {
 							w.write("No valid set selected, please entere math or compsci, case insesitive: ");
 							set = in.readLine().toLowerCase();
 						}
-						switch(set) {
-						case "math":
+						Options.add(set);
 						
-						break;
+						//Values here are place holders, as question sets aren't finalized.
+						w.write("Lastly, please enter the number of questons you would like (1-20):");
+						NumQuestoins = in.readLine();
 						
-						case "compsci":
-						
-						break;
+						while(Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
+							w.write("Number of out of bounds, please enter a number between 1 and 20");
+							NumQuestoins = in.readLine();
 						}
+						Options.add(NumQuestoins); 
+						
 					break;
 					
 					case "custom":
+						Options.add(gameMode); 
 						w.write("If you haven't already, add your csv file with your question/answer set to the file directory, then restart the server.");
 						w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
 						w.write("Please enter the file name: ");
 						String file = in.readLine();
+						
 						if(file.toLowerCase().equals("quit")) {
 							System.exit(0);
 						}
+						Options.add(file);
+						
+						w.write("Lastly, please enter the number of questons you would like from your file:");
+						NumQuestoins = in.readLine();
+						Options.add(NumQuestoins); 
+						
 					break;
 				}
 			}
