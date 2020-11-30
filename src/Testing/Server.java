@@ -35,15 +35,17 @@ public class Server {
 		}
 	}
 	
+	//Todo: pick random questions and answers from the CSVs and add them to their own question array
 	public static void startGame(String[] Options) throws FileNotFoundException {
 		int NumQuestions = Integer.parseInt(Options[3]);
+		String[][] Questions = new String[2][NumQuestions];;
 		String line;
-		List<List<String>> records = new ArrayList<>();
+		List<List<String>> QwA = new ArrayList<>();
 		BufferedReader br;
 		
 		switch(Options[1]) {
 		case "random":
-			int[][] Questions = arithmeticGenerator(Options[2], NumQuestions);
+			Questions = arithmeticGenerator(Options[2], NumQuestions);
 		break;
 		
 		case "preset":
@@ -52,13 +54,13 @@ public class Server {
 		    try {
 				while ((line = br.readLine()) != null) {
 				    String[] values = line.split(",");
-				    records.add(Arrays.asList(values));
+				    QwA.add(Arrays.asList(values));
 				}
 			} catch (IOException e) {
 				System.out.print("Something broke D:");
 				e.printStackTrace();
 			}
-			Questions = new int[2][NumQuestions];
+		    
 			for (int i = 0; i < NumQuestions; i++) {
 				
 			}
@@ -70,13 +72,13 @@ public class Server {
 		    try {
 				while ((line = br.readLine()) != null) {
 				    String[] values = line.split(",");
-				    records.add(Arrays.asList(values));
+				    QwA.add(Arrays.asList(values));
 				}
 			} catch (IOException e) {
 				System.out.print("Something broke D:");
 				e.printStackTrace();
 			}
-			Questions = new int[2][NumQuestions];
+			
 			for (int i = 0; i < NumQuestions; i++) {
 				
 			}
@@ -84,55 +86,51 @@ public class Server {
 		}
 	}
 
-	public static int[][] arithmeticGenerator(String Op, int numQuestions) {
+	public static String[][] arithmeticGenerator(String Op, int numQuestions) {
 		Random rand = new Random();
 		int num1;
 		int num2;
 		int solution;
-		int[][] Questions = new int[3][numQuestions];
+		String[][] Questions = new String[2][numQuestions];
 
 		switch (Op) {
 			case "+":
 				for(int i = 0; i<numQuestions; i++) {
 					num1 = rand.nextInt(100) + 1;
-					Questions[1][i] = num1;
 					num2 = rand.nextInt(100) + 1;
-					Questions[2][i] = num2;
+					Questions[0][i] = num1 + " + " + num2 + " =";
 					solution = num1 + num2;
-					Questions[3][i] = solution;
+					Questions[1][i] = Integer.toString(solution);
 				}
 			break;
 
 			case "-":
 				for(int i = 0; i<numQuestions; i++) {
 					num1 = rand.nextInt(100) + 1;
-					Questions[1][i] = num1;
 					num2 = rand.nextInt(100) + 1;
-					Questions[2][i] = num2;
+					Questions[0][i] = num1 + " - " + num2 + " =";
 					solution = num1 - num2;
-					Questions[3][i] = solution;
+					Questions[1][i] = Integer.toString(solution);
 				}
 			break;
 
 			case "*":
 				for(int i = 0; i<numQuestions; i++) {
 					num1 = rand.nextInt(20) + 1;
-					Questions[1][i] = num1;
 					num2 = rand.nextInt(20) + 1;
-					Questions[2][i] = num2;
+					Questions[0][i] = num1 + " * " + num2 + " =";
 					solution = num1 * num2;
-					Questions[3][i] = solution;
+					Questions[1][i] = Integer.toString(solution);
 				}
 			break;
 
 			case "%":
 				for(int i = 0; i<numQuestions; i++) {
 					num1 = rand.nextInt(400) + 1;
-					Questions[1][i] = num1;
 					num2 = rand.nextInt(20) + 1;
-					Questions[2][i] = num2;
+					Questions[0][i] = num1 + " % " + num2 + " =";
 					solution = num1 % num2;
-					Questions[3][i] = solution;
+					Questions[1][i] = Integer.toString(solution);
 				}
 			break;
 		}
