@@ -46,7 +46,7 @@ public class Server {
 		break;
 		
 		case "custom":
-			//same as above more or less
+			//open corresponding file and randomly pick questions from the file based on the number requested.
 		}
 	}
 
