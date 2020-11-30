@@ -35,8 +35,11 @@ public class Server {
 		}
 	}
 	
-	public static void startGame(String[] Options) {
+	public static void startGame(String[] Options) throws FileNotFoundException {
 		int NumQuestions = Integer.parseInt(Options[3]);
+		String line;
+		List<List<String>> records = new ArrayList<>();
+		BufferedReader br;
 		
 		switch(Options[1]) {
 		case "random":
@@ -44,7 +47,17 @@ public class Server {
 		break;
 		
 		case "preset":
-			//open corresponding file and randomly pick questions from the file based on the number requested.
+			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[2]+"Questions.csv";
+			br = new BufferedReader(new FileReader(filepath));
+		    try {
+				while ((line = br.readLine()) != null) {
+				    String[] values = line.split(",");
+				    records.add(Arrays.asList(values));
+				}
+			} catch (IOException e) {
+				System.out.print("Something broke D:");
+				e.printStackTrace();
+			}
 			Questions = new int[2][NumQuestions];
 			for (int i = 0; i < NumQuestions; i++) {
 				
@@ -52,7 +65,17 @@ public class Server {
 		break;
 		
 		case "custom":
-			//open corresponding file and randomly pick questions from the file based on the number requested.
+			filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[2];
+			br = new BufferedReader(new FileReader(filepath));
+		    try {
+				while ((line = br.readLine()) != null) {
+				    String[] values = line.split(",");
+				    records.add(Arrays.asList(values));
+				}
+			} catch (IOException e) {
+				System.out.print("Something broke D:");
+				e.printStackTrace();
+			}
 			Questions = new int[2][NumQuestions];
 			for (int i = 0; i < NumQuestions; i++) {
 				
@@ -147,10 +170,7 @@ class ClientHandler extends Thread {
 			
 			System.out.println(str + " has connected!");
 
-			String[] welcome = new String[2];
-			welcome[0] = str;
-			welcome[1] = "has joined the game!";
-			Server.sendToAll(welcome);
+
 			
 			if(isHost) {
 				ArrayList<String> Options = new ArrayList<String>();
@@ -214,12 +234,12 @@ class ClientHandler extends Thread {
 					
 					case "custom":
 						Options.add(gameMode); 
-						w.write("If you haven't already, add your csv file with your question/answer set to the file directory, then restart the server.");
+						w.write("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
 						w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
-						w.write("Please enter the file name: ");
+						w.write("Please enter the file name, be sure to include .csv at the end: ");
 						String file = in.readLine();
 						
-						if(file.toLowerCase().equals("quit")) {
+						if(file.toLowerCase().contains("quit")) {
 							System.exit(0);
 						}
 						Options.add(file);
@@ -237,6 +257,12 @@ class ClientHandler extends Thread {
 				}
 				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
 				Server.startGame(strings);
+			} else {
+				String[] welcome = new String[2];
+				welcome[0] = str;
+				welcome[1] = "has joined the game!";
+				Server.sendToAll(welcome);
+				w.write("Please wait for the host to start the game.");
 			}
 			
 		
