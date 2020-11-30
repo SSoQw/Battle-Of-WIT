@@ -37,19 +37,19 @@ public class Server {
 	
 	//Todo: pick random questions and answers from the CSVs and add them to their own question array
 	public static void startGame(String[] Options) throws FileNotFoundException {
-		int NumQuestions = Integer.parseInt(Options[3]);
+		int NumQuestions = Integer.parseInt(Options[2]);
 		String[][] Questions = new String[2][NumQuestions];;
 		String line;
 		List<List<String>> QwA = new ArrayList<>();
 		BufferedReader br;
 		
-		switch(Options[1]) {
+		switch(Options[0]) {
 		case "random":
-			Questions = arithmeticGenerator(Options[2], NumQuestions);
+			Questions = arithmeticGenerator(Options[1], NumQuestions);
 		break;
 		
 		case "preset":
-			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[2]+"Questions.csv";
+			String filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[1]+"Questions.csv";
 			br = new BufferedReader(new FileReader(filepath));
 		    try {
 				while ((line = br.readLine()) != null) {
@@ -67,7 +67,7 @@ public class Server {
 		break;
 		
 		case "custom":
-			filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[2];
+			filepath = "COMP2100_Final_Project/src/Testing/Questoins/"+Options[1];
 			br = new BufferedReader(new FileReader(filepath));
 		    try {
 				while ((line = br.readLine()) != null) {
