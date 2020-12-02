@@ -1,6 +1,5 @@
 package Testing;
 
-// Todo: Add clock to response, add answer check, remove sending every message (change to only send time/forefit). 
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -42,9 +41,11 @@ class MessageRead extends Thread {
 			try {
 				String message = in.readLine();
 				String[] output = message.split(": ");
+				System.out.println(output[0]);
+
 				if (output[0].contains(name + " has joined the game!")) {
 					System.out.print("");
-				} else if (!output[0].equals(name)) {
+				} else if (output.length>1) {
 					System.out.printf("%s%n", output[0]);
 					answer = output[1];
 				}
@@ -88,7 +89,7 @@ class MessageWrite extends Thread {
 
 			} else if (message.equals("pass")) {
 				// send really large time
-				//start new time
+				// start new time
 			}
 
 		} while (!message.equals("{quit}"));

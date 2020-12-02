@@ -48,6 +48,7 @@ public class Server {
 		switch (Options[0]) {
 		case "random":
 			Questions = arithmeticGenerator(Options[1], NumQuestions);
+			game(Questions);
 			break;
 
 		case "preset":
@@ -85,6 +86,7 @@ public class Server {
 
 				count += 1;
 			}
+			game(Questions);
 			break;
 
 		case "custom":
@@ -122,6 +124,7 @@ public class Server {
 
 				count += 1;
 			}
+			game(Questions);
 			break;
 
 		}
@@ -177,12 +180,28 @@ public class Server {
 		}
 		return (Questions);
 	}
+	
+	public static void game(String[][] Questions) {
+		boolean firstQ = true;
+		int numQ = Questions.length;
+		
+		for (int i = 0; i < numQ; i++) {
+			if(firstQ) {
+				firstQ = false;
+				sendToAll(Questions[i]);
+			}
+			
+		}
+		
+	
+	}
 }
 
 class ClientHandler extends Thread {
 	Socket connectionSocket;
 	PrintStream out;
 	PrintWriter w;
+	boolean isHost = true;
 
 	public ClientHandler(Socket s) throws IOException {
 		connectionSocket = s;
@@ -191,11 +210,10 @@ class ClientHandler extends Thread {
 
 	public void run() {
 		try {
-			boolean isHost = false;
 
 			if (!Server.hasHost) {
 				isHost = true;
-				Server.hasHost = false;
+				Server.hasHost = true;
 			}
 
 			boolean done = false;
@@ -211,35 +229,39 @@ class ClientHandler extends Thread {
 
 			if (isHost) {
 				ArrayList<String> Options = new ArrayList<String>();
-				w.write("Welcome " + str
+				w.println("Welcome " + str
 						+ "! You are the host of the game. Please follow the instructions to get your game setup.");
-				w.write("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
-				w.write("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
-				String gameMode = in.readLine().toLowerCase();
+				sleep(2000);
+				w.println("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
+				sleep(2000);
+				w.println("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
+				String gameMode = in.readLine();
+				gameMode = gameMode.toLowerCase();
 
 				while (!gameMode.equals("random") && !gameMode.equals("preset") && !gameMode.equals("custom")) {
-					w.write("No valid gamemode slected, please enter which mode you want to play (Random, Preset, Custom) case insensitive:");
-					gameMode = in.readLine().toLowerCase();
+					w.println("No valid gamemode slected, please enter which mode you want to play (Random, Preset, Custom) case insensitive:");
+					gameMode = in.readLine();
+					gameMode = gameMode.toLowerCase();
 				}
 				switch (gameMode) {
 				case "random":
 					Options.add(gameMode);
 
-					w.write("Please enter the operation you would like to use for your aritmetic set (+, -, *, %)");
+					w.println("Please enter the operation you would like to use for your aritmetic set (+, -, *, %)");
 					String Operation = in.readLine();
 
 					while (!Operation.equals("+") && !Operation.equals("-") && !Operation.equals("*")
 							&& !Operation.equals("%")) {
-						w.write("Please enter enter a valid operation(+, -, *, %)");
+						w.print("Please enter enter a valid operation(+, -, *, %)");
 						Operation = in.readLine();
 					}
 					Options.add(Operation);
 
-					w.write("Lastly, please enter the number of questons you would like (1-20):");
+					w.println("Lastly, please enter the number of questons you would like (1-20):");
 					String NumQuestoins = in.readLine();
 
 					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
-						w.write("Number of out of bounds, please enter a number between 1 and 20");
+						w.println("Number of out of bounds, please enter a number between 1 and 20");
 						NumQuestoins = in.readLine();
 					}
 					Options.add(NumQuestoins);
@@ -249,21 +271,21 @@ class ClientHandler extends Thread {
 				case "preset":
 					Options.add(gameMode);
 
-					w.write("Would you like to use the computer science set, or math set?");
-					w.write("Please entere math or compsci, case insesitive: ");
+					w.println("Would you like to use the computer science set, or math set?");
+					w.println("Please entere math or compsci, case insesitive: ");
 					String set = in.readLine().toLowerCase();
 
 					while (!set.equals("math") && !set.equals("compsci")) {
-						w.write("No valid set selected, please entere math or compsci, case insesitive: ");
+						w.println("No valid set selected, please entere math or compsci, case insesitive: ");
 						set = in.readLine().toLowerCase();
 					}
 					Options.add(set);
 
-					w.write("Lastly, please enter the number of questons you would like:");
+					w.println("Lastly, please enter the number of questons you would like:");
 					NumQuestoins = in.readLine();
 
 					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
-						w.write("Number of out of bounds, please enter a number between 1 and 20");
+						w.println("Number of out of bounds, please enter a number between 1 and 20");
 						NumQuestoins = in.readLine();
 					}
 					Options.add(NumQuestoins);
@@ -272,9 +294,9 @@ class ClientHandler extends Thread {
 
 				case "custom":
 					Options.add(gameMode);
-					w.write("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
-					w.write("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
-					w.write("Please enter the file name, be sure to include .csv at the end: ");
+					w.println("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
+					w.println("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
+					w.println("Please enter the file name, be sure to include .csv at the end: ");
 					String file = in.readLine();
 
 					if (file.toLowerCase().contains("quit")) {
@@ -282,13 +304,13 @@ class ClientHandler extends Thread {
 					}
 					Options.add(file);
 
-					w.write("Lastly, please enter the number of questons you would like from your file:");
+					w.println("Lastly, please enter the number of questons you would like from your file:");
 					NumQuestoins = in.readLine();
 					Options.add(NumQuestoins);
 
 					break;
 				}
-				w.write("You're all setup, type start to start the game.");
+				w.println("You're all setup, type start to start the game.");
 				String start = in.readLine();
 				while (!start.equalsIgnoreCase("start")) {
 					start = in.readLine();
@@ -300,7 +322,7 @@ class ClientHandler extends Thread {
 				welcome[0] = str;
 				welcome[1] = "has joined the game!";
 				Server.sendToAll(welcome);
-				w.write("Please wait for the host to start the game.");
+				w.println("Please wait for the host to start the game.");
 			}
 
 			while (!done) {
@@ -316,6 +338,9 @@ class ClientHandler extends Thread {
 			}
 		} catch (IOException x) {
 			System.out.println(x);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
