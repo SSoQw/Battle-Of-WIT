@@ -27,6 +27,7 @@ class MessageRead extends Thread {
 	Socket s;
 	BufferedReader in;
 	static String name;
+	static String answer;
 
 	public MessageRead(Socket s) {
 		try {
@@ -41,10 +42,11 @@ class MessageRead extends Thread {
 			try {
 				String message = in.readLine();
 				String[] output = message.split(": ");
-				if (output[0].contains(name + " has joined the chat!")) {
+				if (output[0].contains(name + " has joined the game!")) {
 					System.out.print("");
 				} else if (!output[0].equals(name)) {
-					System.out.printf("%s%n", message);
+					System.out.printf("%s%n", output[0]);
+					answer = output[1];
 				}
 			} catch (IOException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
@@ -81,7 +83,14 @@ class MessageWrite extends Thread {
 		String message;
 		do {
 			message = sc.nextLine();
-			w.printf("%s:::%s%n", name, message);
+			if (message.equals(MessageRead.answer)) {
+				// send time, start new time
+
+			} else if (message.equals("pass")) {
+				// send really large time
+				//start new time
+			}
+
 		} while (!message.equals("{quit}"));
 
 		sc.close();
