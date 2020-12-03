@@ -330,14 +330,12 @@ class ClientHandler extends Thread {
 
 			while (!done) {
 				message = in.readLine();
-				if (message == null) {
+				if (message == "{quit}") {
 					done = true;
 					continue;
 				}
-				messageSplit = message.split(":::");
-				if (messageSplit.length > 1) {
-					Server.sendToAll(messageSplit);
-				}
+			
+				
 			}
 		} catch (IOException x) {
 			System.out.println(x);
