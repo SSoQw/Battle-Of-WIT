@@ -316,6 +316,9 @@ class ClientHandler extends Thread {
 					start = in.readLine();
 				}
 				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
+				String[] START = new String[1];
+				START[0] = "start";
+				Server.sendToAll(START);
 				Server.startGame(strings);
 			} else {
 				String[] welcome = new String[2];
@@ -339,7 +342,6 @@ class ClientHandler extends Thread {
 		} catch (IOException x) {
 			System.out.println(x);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

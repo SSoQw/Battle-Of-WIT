@@ -27,6 +27,7 @@ class MessageRead extends Thread {
 	BufferedReader in;
 	static String name;
 	static String answer;
+	static boolean donesetup;
 
 	public MessageRead(Socket s) {
 		try {
@@ -42,8 +43,10 @@ class MessageRead extends Thread {
 				String message = in.readLine();
 				String[] output = message.split(": ");
 				System.out.println(output[0]);
-
-				if (output[0].contains(name + " has joined the game!")) {
+				
+				if (message.toLowerCase().contains("start")) {
+					donesetup = true;
+				} else if (output[0].contains(name + " has joined the game!")) {
 					System.out.print("");
 				} else if (output.length>1) {
 					System.out.printf("%s%n", output[0]);
@@ -80,10 +83,16 @@ class MessageWrite extends Thread {
 		w.println(name);
 
 		System.out.println("Hello " + name + "! If you ever want to leave type {quit}");
-
+		
 		String message;
+		
+		while(!MessageRead.donesetup) {
+			message = sc.next();
+			w.println(message);
+		}
 		do {
-			message = sc.nextLine();
+			message = sc.next();
+
 			if (message.equals(MessageRead.answer)) {
 				// send time, start new time
 
