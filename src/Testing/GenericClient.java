@@ -95,13 +95,14 @@ class MessageWrite extends Thread {
 			message = sc.next();
 			w.println(message);
 		}
+		System.out.println("If you ever want to pass a question, type pass");
 		do {
 			message = sc.next();
 
 			if (message.equals(MessageRead.answer)) {
 				w.println(stopwatch.toString());
 
-			} else if (message.equals("pass")) {
+			} else if (message.equalsIgnoreCase("pass")) {
 				w.println("100000000 ms");
 			}
 
