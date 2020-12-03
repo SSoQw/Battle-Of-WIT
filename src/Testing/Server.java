@@ -201,7 +201,7 @@ class ClientHandler extends Thread {
 	Socket connectionSocket;
 	PrintStream out;
 	PrintWriter w;
-	boolean isHost = true;
+	boolean isHost = false;
 
 	public ClientHandler(Socket s) throws IOException {
 		connectionSocket = s;
