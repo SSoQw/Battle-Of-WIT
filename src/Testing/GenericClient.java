@@ -3,11 +3,12 @@ package Testing;
 import java.util.*;
 import java.io.*;
 import java.net.*;
-//import com.google.common.base.Stopwatch;
+import com.google.common.base.Stopwatch; //By Kevin Bourrillion
 
 public class GenericClient {
 
 	public static void main(String[] args) throws Exception {
+		
 		try {
 			Socket connectionSocket = new Socket("localhost", 25565);
 			new MessageRead(connectionSocket).start();
@@ -52,6 +53,7 @@ class MessageRead extends Thread {
 				} else if (output.length>1) {
 					System.out.printf("%s%n", output[0]);
 					answer = output[1];
+					MessageWrite.stopwatch.reset();
 				}
 			} catch (IOException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
@@ -63,6 +65,7 @@ class MessageRead extends Thread {
 }
 
 class MessageWrite extends Thread {
+	static Stopwatch stopwatch = Stopwatch.createUnstarted();
 	Socket s;
 	PrintWriter w;
 	
@@ -96,11 +99,10 @@ class MessageWrite extends Thread {
 			message = sc.next();
 
 			if (message.equals(MessageRead.answer)) {
-				// send time, start new time
+				w.println(stopwatch.toString());
 
 			} else if (message.equals("pass")) {
-				// send really large time
-				// start new time
+				w.println("100000000 ms");
 			}
 
 		} while (!message.equals("{quit}"));
