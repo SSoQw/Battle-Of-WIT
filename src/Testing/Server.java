@@ -126,7 +126,6 @@ public class Server {
 			}
 			game(Questions);
 			break;
-
 		}
 	}
 
@@ -184,11 +183,14 @@ public class Server {
 	public static void game(String[][] Questions) {
 		boolean firstQ = true;
 		int numQ = Questions.length;
+		String [] QnA = new String[2];
 		
 		for (int i = 0; i < numQ; i++) {
+			QnA[0] = Questions[0][i];
+			QnA[1] = Questions[1][i];
 			if(firstQ) {
 				firstQ = false;
-				sendToAll(Questions[i]);
+				sendToAll(QnA);
 			}
 			
 		}
@@ -222,7 +224,6 @@ class ClientHandler extends Thread {
 			BufferedReader in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
 			String message;
-			String[] messageSplit;
 			String str = in.readLine();
 
 			System.out.println(str + " has connected!");
@@ -231,9 +232,9 @@ class ClientHandler extends Thread {
 				ArrayList<String> Options = new ArrayList<String>();
 				w.println("Welcome " + str
 						+ "! You are the host of the game. Please follow the instructions to get your game setup.");
-				sleep(2000);
+				sleep(1500);
 				w.println("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
-				sleep(2000);
+				sleep(1500);
 				w.println("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
 				String gameMode = in.readLine();
 				gameMode = gameMode.toLowerCase();
@@ -316,8 +317,7 @@ class ClientHandler extends Thread {
 					start = in.readLine();
 				}
 				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
-				String[] START = new String[1];
-				START[0] = "start";
+				String[] START = new String[]{"start", " "};
 				Server.sendToAll(START);
 				Server.startGame(strings);
 			} else {
@@ -334,8 +334,6 @@ class ClientHandler extends Thread {
 					done = true;
 					continue;
 				}
-			
-				
 			}
 		} catch (IOException x) {
 			System.out.println(x);

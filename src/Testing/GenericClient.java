@@ -1,11 +1,13 @@
 package Testing;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
-import com.google.common.base.Stopwatch; //By Kevin Bourrillion
+import com.google.common.base.*;
 
 public class GenericClient {
+	static Stopwatch stopwatch = Stopwatch.createUnstarted();
 
 	public static void main(String[] args) throws Exception {
 		
@@ -44,7 +46,6 @@ class MessageRead extends Thread {
 			try {
 				String message = in.readLine();
 				String[] output = message.split(": ");
-				System.out.println(output[0]);
 				
 				if (message.toLowerCase().contains("start")) {
 					donesetup = true;
@@ -53,7 +54,9 @@ class MessageRead extends Thread {
 				} else if (output.length>1) {
 					System.out.printf("%s%n", output[0]);
 					answer = output[1];
-					MessageWrite.stopwatch.reset();
+					GenericClient.stopwatch.reset();
+				}else {
+					System.out.println(output[0]);
 				}
 			} catch (IOException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
@@ -65,7 +68,6 @@ class MessageRead extends Thread {
 }
 
 class MessageWrite extends Thread {
-	static Stopwatch stopwatch = Stopwatch.createUnstarted();
 	Socket s;
 	PrintWriter w;
 	
@@ -81,29 +83,32 @@ class MessageWrite extends Thread {
 
 	public void run() {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Welcome to the chatroom, please enter your name...");
+		System.out.println("Welcome to Battle of WIT, please enter your name...");
 		String name = sc.next();
 		MessageRead.name = name;
-
-		w.println(name);
-
-		System.out.println("Hello " + name + "! If you ever want to leave type {quit}");
-		
 		String message;
 		
+		
+		w.println(name);
+	
+	
 		while(!MessageRead.donesetup) {
 			message = sc.next();
 			w.println(message);
 		}
 		System.out.println("If you ever want to pass a question, type pass");
 		do {
-			message = sc.next();
-			if (message.equals(MessageRead.answer)) {
-				w.println(stopwatch.toString());
+			message = sc.nextLine();
+			if (message.contains(MessageRead.answer)) {
+				System.out.print("Correct, you answered in " + GenericClient.stopwatch.elapsed(TimeUnit.SECONDS));
+				w.println(GenericClient.stopwatch.toString());
 			} else if (message.equalsIgnoreCase("pass")) {
+				System.out.print("You've passed on this questoin.");
 				w.println("100000000 ms");
+			}else {
+				System.out.print("Incorrect, please try again: ");
+				System.out.print(MessageRead.answer);
 			}
-
 		} while (!message.equals("{quit}"));
 
 		sc.close();
