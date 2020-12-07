@@ -8,6 +8,11 @@ public class Server {
 	static ServerSocket serverSocket;
 	static Vector<ClientHandler> clients = new Vector<ClientHandler>();
 	static boolean hasHost = false;
+	static int clientnumber = 0;
+	static double[] times;
+	static boolean firstQ = true;
+	static boolean firstA = true;
+	static boolean allGraded = false;
 
 	public static void main(String[] args) throws IOException {
 		serverSocket = new ServerSocket(25565);
@@ -30,7 +35,7 @@ public class Server {
 			} else if (s[1].contains("has joined the game!")) {
 				x.w.printf("%s %s%n", s[0], s[1]);
 			} else {
-				x.w.printf("%s: %s%n", s[0], s[1]);
+				x.w.printf("%s:%s%n", s[0], s[1]);
 			}
 		}
 	}
@@ -101,7 +106,6 @@ public class Server {
 				System.out.print("Something broke D:, your filename is probably wrong.");
 				e.printStackTrace();
 			}
-
 			possibleQ = QwA.size() - 1;
 			used = new boolean[possibleQ];
 			rand2 = new Random();
@@ -181,7 +185,6 @@ public class Server {
 	}
 	
 	public static void game(String[][] Questions) {
-		boolean firstQ = true;
 		int numQ = Questions.length;
 		String [] QnA = new String[2];
 		
@@ -189,14 +192,50 @@ public class Server {
 			QnA[0] = Questions[0][i];
 			QnA[1] = Questions[1][i];
 			if(firstQ) {
-				firstQ = false;
 				sendToAll(QnA);
+				firstQ = false;
+			} else {
+				while(!allGraded) {
+					System.out.println("waiting for grades");
+				}
+				QnA[0] = Questions[0][i];
+				QnA[1] = Questions[1][i];
+				sendToAll(QnA);
+				allGraded = false;
 			}
 			
 		}
-		
 	
 	}
+	public static void grade(String time, int id) {
+		times = new double[clients.size()];
+		if (firstA) {
+			firstA = false;
+			times = timeReset(times);
+		}
+		times[id] = Double.parseDouble(time);
+		
+		boolean zeros = false;
+		for(double x : times) {
+			if(x == 0) {
+				  zeros = true;
+				  break;
+			}
+		}
+		if(!zeros) {
+			allGraded = true;
+			timeReset(times);
+		}
+
+
+	}
+	public static double[] timeReset(double [] toReset) {
+		for (int i = 0; i<toReset.length; i++) {
+			toReset[i]=0;
+		}
+		return toReset;
+	}
+
 }
 
 class ClientHandler extends Thread {
@@ -212,6 +251,9 @@ class ClientHandler extends Thread {
 
 	public void run() {
 		try {
+			
+			int id = Server.clientnumber;
+			Server.clientnumber += 1;
 
 			if (!Server.hasHost) {
 				isHost = true;
@@ -224,23 +266,23 @@ class ClientHandler extends Thread {
 			BufferedReader in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
 			String message;
-			String str = in.readLine();
+			String name = in.readLine();
 
-			System.out.println(str + " has connected!");
+			System.out.println(name + " has connected!");
 
 			if (isHost) {
 				ArrayList<String> Options = new ArrayList<String>();
-				w.println("Welcome " + str
+				w.println("Welcome " + name
 						+ "! You are the host of the game. Please follow the instructions to get your game setup.");
-				sleep(1500);
+				sleep(750);
 				w.println("First, would you like to play with Random Aritmetic, Choose a Preset, or Use Custom questions?");
-				sleep(1500);
-				w.println("Enter which mode you want to play (Random, Preset, Custom) case insensitive: ");
+				sleep(750);
+				w.println("Enter which mode you want to play (Random, Preset, Custom) case insensitive ");
 				String gameMode = in.readLine();
 				gameMode = gameMode.toLowerCase();
 
 				while (!gameMode.equals("random") && !gameMode.equals("preset") && !gameMode.equals("custom")) {
-					w.println("No valid gamemode slected, please enter which mode you want to play (Random, Preset, Custom) case insensitive:");
+					w.println("No valid gamemode slected, please enter which mode you want to play (Random, Preset, Custom) case insensitive");
 					gameMode = in.readLine();
 					gameMode = gameMode.toLowerCase();
 				}
@@ -258,7 +300,7 @@ class ClientHandler extends Thread {
 					}
 					Options.add(Operation);
 
-					w.println("Lastly, please enter the number of questons you would like (1-20):");
+					w.println("Lastly, please enter the number of questons you would like (1-20)");
 					String NumQuestoins = in.readLine();
 
 					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
@@ -268,21 +310,21 @@ class ClientHandler extends Thread {
 					Options.add(NumQuestoins);
 
 					break;
-
+					
 				case "preset":
 					Options.add(gameMode);
 
 					w.println("Would you like to use the computer science set, or math set?");
-					w.println("Please entere math or compsci, case insesitive: ");
+					w.println("Please entere math or compsci, case insesitive ");
 					String set = in.readLine().toLowerCase();
 
 					while (!set.equals("math") && !set.equals("compsci")) {
-						w.println("No valid set selected, please entere math or compsci, case insesitive: ");
+						w.println("No valid set selected, please entere math or compsci, case insesitive ");
 						set = in.readLine().toLowerCase();
 					}
 					Options.add(set);
 
-					w.println("Lastly, please enter the number of questons you would like:");
+					w.println("Lastly, please enter the number of questons you would like");
 					NumQuestoins = in.readLine();
 
 					while (Integer.parseInt(NumQuestoins) > 20 || Integer.parseInt(NumQuestoins) < 1) {
@@ -297,7 +339,7 @@ class ClientHandler extends Thread {
 					Options.add(gameMode);
 					w.println("If you haven't already, add your csv file with your question/answer set to the Questions folder, then restart the server.");
 					w.println("If you have already added the file, please enter the name of the file, otherwise enter quit to restrat.");
-					w.println("Please enter the file name, be sure to include .csv at the end: ");
+					w.println("Please enter the file name, be sure to include .csv at the end ");
 					String file = in.readLine();
 
 					if (file.toLowerCase().contains("quit")) {
@@ -305,13 +347,13 @@ class ClientHandler extends Thread {
 					}
 					Options.add(file);
 
-					w.println("Lastly, please enter the number of questons you would like from your file:");
+					w.println("Lastly, please enter the number of questons you would like from your file");
 					NumQuestoins = in.readLine();
 					Options.add(NumQuestoins);
 
 					break;
 				}
-				w.println("You're all setup, type start to start the game.");
+				w.println("You're all setup type start to start the game");
 				String start = in.readLine();
 				while (!start.equalsIgnoreCase("start")) {
 					start = in.readLine();
@@ -322,17 +364,23 @@ class ClientHandler extends Thread {
 				Server.startGame(strings);
 			} else {
 				String[] welcome = new String[2];
-				welcome[0] = str;
+				welcome[0] = name;
 				welcome[1] = "has joined the game!";
 				Server.sendToAll(welcome);
 				w.println("Please wait for the host to start the game.");
 			}
-
+			String oldmessage = "";
 			while (!done) {
 				message = in.readLine();
-				if (message == "{quit}") {
+				if (message.equals("{quit}")) {
 					done = true;
 					continue;
+				} else if (message.equals(oldmessage)){
+					System.out.println("waiting for response from client " + id);
+					sleep(500);
+				} else {
+					Server.grade(message, id);
+					oldmessage = message;
 				}
 			}
 		} catch (IOException x) {

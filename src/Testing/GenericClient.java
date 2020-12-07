@@ -46,7 +46,7 @@ class MessageRead extends Thread {
 				String message = in.readLine();
 				String[] output = message.split(":");
 				
-				if (message.toLowerCase().contains("start")) {
+				if (output[0].equals("start")) {
 					donesetup = true;
 				} else if (output[0].contains(name + " has joined the game!")) {
 					System.out.print("");
@@ -54,7 +54,7 @@ class MessageRead extends Thread {
 					System.out.printf("%s", output[0]);
 					answer = output[1];
 				}else {
-					System.out.print(output[0]);
+					System.out.println(message);
 				}
 			} catch (IOException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
@@ -100,7 +100,7 @@ class MessageWrite extends Thread {
 			message = sc.next();
 			if (message.contains(MessageRead.answer)) {
 				long time = stopwatch.elapsed(TimeUnit.NANOSECONDS);
-				System.out.printf("Correct, you answered in %.4f sec", time*Math.pow(10, -9));
+				System.out.printf("Correct, you answered in %.4f seconds", time*Math.pow(10, -9));
 				w.println(time*Math.pow(10, -9));
 				stopwatch = Stopwatch.createStarted();
 			} else if (message.equalsIgnoreCase("pass")) {
