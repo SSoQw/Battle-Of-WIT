@@ -7,7 +7,6 @@ import java.net.*;
 import com.google.common.base.*;
 
 public class GenericClient {
-	static Stopwatch stopwatch = Stopwatch.createUnstarted();
 
 	public static void main(String[] args) throws Exception {
 		
@@ -45,18 +44,17 @@ class MessageRead extends Thread {
 		while (true) {
 			try {
 				String message = in.readLine();
-				String[] output = message.split(": ");
+				String[] output = message.split(":");
 				
 				if (message.toLowerCase().contains("start")) {
 					donesetup = true;
 				} else if (output[0].contains(name + " has joined the game!")) {
 					System.out.print("");
 				} else if (output.length>1) {
-					System.out.printf("%s%n", output[0]);
+					System.out.printf("%s", output[0]);
 					answer = output[1];
-					GenericClient.stopwatch.reset();
 				}else {
-					System.out.println(output[0]);
+					System.out.print(output[0]);
 				}
 			} catch (IOException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
@@ -97,17 +95,19 @@ class MessageWrite extends Thread {
 			w.println(message);
 		}
 		System.out.println("If you ever want to pass a question, type pass");
+		Stopwatch stopwatch = Stopwatch.createStarted();
 		do {
-			message = sc.nextLine();
+			message = sc.next();
 			if (message.contains(MessageRead.answer)) {
-				System.out.print("Correct, you answered in " + GenericClient.stopwatch.elapsed(TimeUnit.SECONDS));
-				w.println(GenericClient.stopwatch.toString());
+				long time = stopwatch.elapsed(TimeUnit.NANOSECONDS);
+				System.out.printf("Correct, you answered in %.4f sec", time*Math.pow(10, -9));
+				w.println(time*Math.pow(10, -9));
+				stopwatch = Stopwatch.createStarted();
 			} else if (message.equalsIgnoreCase("pass")) {
 				System.out.print("You've passed on this questoin.");
-				w.println("100000000 ms");
+				w.println("100000000");
 			}else {
 				System.out.print("Incorrect, please try again: ");
-				System.out.print(MessageRead.answer);
 			}
 		} while (!message.equals("{quit}"));
 
