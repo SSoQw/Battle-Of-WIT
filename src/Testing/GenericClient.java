@@ -46,17 +46,22 @@ class MessageRead extends Thread {
 				String message = in.readLine();
 				String[] output = message.split(":");
 				
-				if (output[0].equals("start")) {
+				if (message.equals("start: ")) {
 					donesetup = true;
-				} else if (output[0].contains(name + " has joined the game!")) {
-					System.out.print("");
+				}else if(message.contains("won")){
+					System.out.println(message);
+				}else if (output[0].contains("has joined the game!")) {
+					if(!output[0].contains(name)){
+						System.out.println(message);
+					}
 				} else if (output.length>1) {
-					System.out.printf("%s", output[0]);
+					System.out.printf("%s\n", output[0]);
 					answer = output[1];
 				}else {
 					System.out.println(message);
 				}
-			} catch (IOException ex) {
+				sleep(500);
+			} catch (IOException | InterruptedException ex) {
 				System.out.println("Error reading: " + ex.getMessage());
 				ex.printStackTrace();
 				break;
@@ -89,27 +94,35 @@ class MessageWrite extends Thread {
 		
 		w.println(name);
 	
-	
-		while(!MessageRead.donesetup) {
+	while(!MessageRead.donesetup) {
 			message = sc.next();
 			w.println(message);
-		}
-		System.out.println("If you ever want to pass a question, type pass");
-		Stopwatch stopwatch = Stopwatch.createStarted();
-		do {
-			message = sc.next();
-			if (message.contains(MessageRead.answer)) {
-				long time = stopwatch.elapsed(TimeUnit.NANOSECONDS);
-				System.out.printf("Correct, you answered in %.4f seconds", time*Math.pow(10, -9));
-				w.println(time*Math.pow(10, -9));
-				stopwatch = Stopwatch.createStarted();
-			} else if (message.equalsIgnoreCase("pass")) {
-				System.out.print("You've passed on this questoin.");
-				w.println("100000000");
-			}else {
-				System.out.print("Incorrect, please try again: ");
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				System.out.println("broked, probably fix later D:");
 			}
-		} while (!message.equals("{quit}"));
+		} 
+			
+		
+		Stopwatch stopwatch = Stopwatch.createStarted();
+		String Canswer;
+		do {
+			Canswer = sc.next();
+			if (Canswer.contains(MessageRead.answer)) {
+				long time = stopwatch.elapsed(TimeUnit.NANOSECONDS);
+				System.out.printf("Correct, you answered in %.4f seconds\n", time*Math.pow(10, -9));
+				w.printf("%s answered first in %.4f seconds.\r\n", name, time*Math.pow(10, -9));
+				try {
+					sleep(10);
+				} catch (InterruptedException e) {
+					System.out.println("broked, probably fix later D:");
+				}
+				stopwatch = Stopwatch.createStarted();
+			}else {
+				System.out.printf("Incorrect, please try again: ");
+			}
+		} while (!Canswer.equals("{quit}"));
 
 		sc.close();
 		System.exit(0);

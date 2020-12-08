@@ -3,17 +3,15 @@ package Testing;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
 	static ServerSocket serverSocket;
 	static Vector<ClientHandler> clients = new Vector<ClientHandler>();
 	static boolean hasHost = false;
-	static int clientnumber = 0;
-	static double[] times;
-	static boolean firstQ = true;
-	static boolean firstA = true;
-	static boolean allGraded = false;
-
+	static boolean Answered = false;
+	static int maxscore;
+	static String old = "";
 	public static void main(String[] args) throws IOException {
 		serverSocket = new ServerSocket(25565);
 		System.out.println("Waiting for users...");
@@ -34,13 +32,16 @@ public class Server {
 				x.w.printf("%s has left the game.%n", s[0]);
 			} else if (s[1].contains("has joined the game!")) {
 				x.w.printf("%s %s%n", s[0], s[1]);
+			}else if (s[1].contains("won")){
+				x.w.printf("%s %s%n", s[0], s[1]);
 			} else {
 				x.w.printf("%s:%s%n", s[0], s[1]);
+				System.out.printf("%s:%s%n", s[0], s[1]);
 			}
 		}
 	}
 
-	public static void startGame(String[] Options) throws FileNotFoundException {
+	public static void startGame(String[] Options) throws IOException, InterruptedException {
 		int NumQuestions = Integer.parseInt(Options[2]);
 		int pickedQ;
 		int count = 0;
@@ -184,64 +185,71 @@ public class Server {
 		return (Questions);
 	}
 	
-	public static void game(String[][] Questions) {
-		int numQ = Questions.length;
-		String [] QnA = new String[2];
-		
+	public static void game(String[][] Questions) throws IOException {
+		int numQ = Questions[0].length - 1;
+		System.out.println(Integer.toString(Questions[0].length - 1));
+		String[] QnA = new String[2];
 		for (int i = 0; i < numQ; i++) {
-			QnA[0] = Questions[0][i];
-			QnA[1] = Questions[1][i];
-			if(firstQ) {
-				sendToAll(QnA);
-				firstQ = false;
+			if (haveWinner()) {
+				endGame();
 			} else {
-				while(!allGraded) {
-					System.out.println("waiting for grades");
-				}
 				QnA[0] = Questions[0][i];
 				QnA[1] = Questions[1][i];
 				sendToAll(QnA);
-				allGraded = false;
+				while (!Answered) {
+					checkForAnswer();
+				}
 			}
-			
+			Answered = false;
 		}
+	}
 	
-	}
-	public static void grade(String time, int id) {
-		times = new double[clients.size()];
-		if (firstA) {
-			firstA = false;
-			times = timeReset(times);
-		}
-		times[id] = Double.parseDouble(time);
-		
-		boolean zeros = false;
-		for(double x : times) {
-			if(x == 0) {
-				  zeros = true;
-				  break;
+	public static boolean haveWinner() {
+		for (ClientHandler x : clients) {
+			if(x.score == maxscore) {
+				return true;
 			}
 		}
-		if(!zeros) {
-			allGraded = true;
-			timeReset(times);
-		}
-
-
+		return false;
 	}
-	public static double[] timeReset(double [] toReset) {
-		for (int i = 0; i<toReset.length; i++) {
-			toReset[i]=0;
+	
+	public static void endGame() {
+		String name = "";
+		for (ClientHandler x : clients) {
+			if(x.score == maxscore) {
+				name = x.name;
+			}
 		}
-		return toReset;
+		String[] winner = new String[2];
+		winner[0] = name;
+		winner[1] = "has won, they answered " + maxscore + " questions the fastest.";
+		sendToAll(winner);
 	}
-
+	
+	public static void checkForAnswer() throws IOException {
+		for (ClientHandler x : clients) {
+			String Check = x.in.readLine();
+			if (Check != null && !Check.equals(old)) {
+				System.out.println("Made it here");
+				Answered = true;
+				x.score += 1;
+				old = Check;
+				return;
+			}else {
+				System.out.println("waiting");
+			}
+		}
+	}
+	
 }
 
 class ClientHandler extends Thread {
 	Socket connectionSocket;
 	PrintStream out;
 	PrintWriter w;
+	BufferedReader in;
+	int score = 0;
+	String name;
 	boolean isHost = false;
 
 	public ClientHandler(Socket s) throws IOException {
@@ -252,21 +260,16 @@ class ClientHandler extends Thread {
 	public void run() {
 		try {
 			
-			int id = Server.clientnumber;
-			Server.clientnumber += 1;
 
 			if (!Server.hasHost) {
 				isHost = true;
 				Server.hasHost = true;
 			}
 
-			boolean done = false;
 			out = new PrintStream(new BufferedOutputStream(connectionSocket.getOutputStream()));
 			w = new PrintWriter(out, true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-
-			String message;
-			String name = in.readLine();
+			in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			name = in.readLine();
 
 			System.out.println(name + " has connected!");
 
@@ -308,6 +311,7 @@ class ClientHandler extends Thread {
 						NumQuestoins = in.readLine();
 					}
 					Options.add(NumQuestoins);
+					Server.maxscore = (Integer.parseInt(NumQuestoins)/2)+1;
 
 					break;
 					
@@ -332,6 +336,7 @@ class ClientHandler extends Thread {
 						NumQuestoins = in.readLine();
 					}
 					Options.add(NumQuestoins);
+					Server.maxscore = (Integer.parseInt(NumQuestoins)/2)+1;
 
 					break;
 
@@ -350,17 +355,19 @@ class ClientHandler extends Thread {
 					w.println("Lastly, please enter the number of questons you would like from your file");
 					NumQuestoins = in.readLine();
 					Options.add(NumQuestoins);
+					Server.maxscore = (Integer.parseInt(NumQuestoins)/2)+1;
 
 					break;
 				}
 				w.println("You're all setup type start to start the game");
 				String start = in.readLine();
-				while (!start.equalsIgnoreCase("start")) {
+				while (!start.contains("start")) {
 					start = in.readLine();
 				}
 				String[] strings = Arrays.stream(Options.toArray()).toArray(String[]::new);
 				String[] START = new String[]{"start", " "};
 				Server.sendToAll(START);
+				sleep(1000);
 				Server.startGame(strings);
 			} else {
 				String[] welcome = new String[2];
@@ -368,20 +375,6 @@ class ClientHandler extends Thread {
 				welcome[1] = "has joined the game!";
 				Server.sendToAll(welcome);
 				w.println("Please wait for the host to start the game.");
-			}
-			String oldmessage = "";
-			while (!done) {
-				message = in.readLine();
-				if (message.equals("{quit}")) {
-					done = true;
-					continue;
-				} else if (message.equals(oldmessage)){
-					System.out.println("waiting for response from client " + id);
-					sleep(500);
-				} else {
-					Server.grade(message, id);
-					oldmessage = message;
-				}
 			}
 		} catch (IOException x) {
 			System.out.println(x);
