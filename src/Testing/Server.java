@@ -3,7 +3,6 @@ package Testing;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Server {
 	static ServerSocket serverSocket;
@@ -36,7 +35,6 @@ public class Server {
 				x.w.printf("%s %s%n", s[0], s[1]);
 			} else {
 				x.w.printf("%s:%s%n", s[0], s[1]);
-				System.out.printf("%s:%s%n", s[0], s[1]);
 			}
 		}
 	}
@@ -230,13 +228,10 @@ public class Server {
 		for (ClientHandler x : clients) {
 			String Check = x.in.readLine();
 			if (Check != null && !Check.equals(old)) {
-				System.out.println("Made it here");
 				Answered = true;
 				x.score += 1;
 				old = Check;
 				return;
-			}else {
-				System.out.println("waiting");
 			}
 		}
 	}

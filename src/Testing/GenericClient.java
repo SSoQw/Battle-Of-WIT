@@ -50,11 +50,12 @@ class MessageRead extends Thread {
 					donesetup = true;
 				}else if(message.contains("won")){
 					System.out.println(message);
-				}else if (output[0].contains("has joined the game!")) {
+					System.exit(0);
+				}else if (message.contains("has joined the game!")) {
 					if(!output[0].contains(name)){
 						System.out.println(message);
 					}
-				} else if (output.length>1) {
+				} else if (output.length>1 && output[1] != null) {
 					System.out.printf("%s\n", output[0]);
 					answer = output[1];
 				}else {
@@ -114,7 +115,7 @@ class MessageWrite extends Thread {
 				System.out.printf("Correct, you answered in %.4f seconds\n", time*Math.pow(10, -9));
 				w.printf("%s answered first in %.4f seconds.\r\n", name, time*Math.pow(10, -9));
 				try {
-					sleep(10);
+					sleep(1000);
 				} catch (InterruptedException e) {
 					System.out.println("broked, probably fix later D:");
 				}
