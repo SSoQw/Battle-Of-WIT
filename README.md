@@ -14,6 +14,10 @@ Battle of WIT is a multiplayer math/computer-science problem-solving game in whi
 1. Added the jar in the parent file to the class path.
 
 ## Run
+1. Start server
+2. Start any number of clients
+3. Setup the game from the host client (insturctions are provided from the server)
+4. Enjoy
 
 # Demo Video
 
