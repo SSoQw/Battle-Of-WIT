@@ -11,6 +11,7 @@ Battle of WIT is a multiplayer math/computer-science problem-solving game in whi
 ## Installation and Setup
 1. Install Eclipse if you haven't already
 1. Clone this repository and install its dependencies
+1. Added the jar in the parent file to the class path.
 
 ## Run
 
