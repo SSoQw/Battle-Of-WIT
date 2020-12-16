@@ -20,6 +20,7 @@ Battle of WIT is a multiplayer math/computer-science problem-solving game in whi
 4. Enjoy
 
 # Demo Video
+https://streamable.com/fwqpag
 
 # Contributors
 * Leblanc, Reilly
